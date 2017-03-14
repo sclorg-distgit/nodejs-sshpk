@@ -7,7 +7,7 @@
 
 Name:       %{?scl_prefix}nodejs-%{npm_name}
 Version:    1.9.2
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    A library for finding and using SSH public keys
 License:    MIT
 URL:        https://github.com/arekinath/node-sshpk#readme
@@ -16,16 +16,17 @@ BuildRequires: %{?scl_prefix}nodejs-devel
 BuildArch:  noarch
 ExclusiveArch: %{nodejs_arches} noarch
 
+Patch0:     fix-opt-deps.patch
+
 %description
 A library for finding and using SSH public keys
 
 %prep
 %setup -q -n package
 
-%nodejs_fixdep jsbn
-%nodejs_fixdep tweetnacl '>=0.14'
-%nodejs_fixdep jodid25519
-%nodejs_fixdep ecc-jsbn
+%patch0
+
+%nodejs_fixdep tweetnacl
 
 rm -rf node_modules
 
@@ -51,11 +52,8 @@ cp -pr bin lib package.json %{buildroot}%{nodejs_sitelib}/%{npm_name}
 %doc README.md
 
 %changelog
-* Fri Jan 27 2017 Zuzana Svetlikova <zsvetlik@redhat.com> - 1.9.2-3
-- Define tweetnacl version
-
-* Thu Jan 05 2017 root - 1.9.2-2
-- Fixdep optional dependencies
+* Fri Jan 27 2017 Zuzana Svetlikova <zsvetlik@redhat.com> - 1.9.2-4
+- Patch package.json to include optional deps in dependencies
 
 * Thu Sep 22 2016 Zuzana Svetlikova <zsvetlik@redhat.com> - 1.9.2-1
 - Updated with script
